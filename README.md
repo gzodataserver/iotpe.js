@@ -65,10 +65,10 @@ the example below.
 # mosca has no authentication out of the box, so this will work
 
 # Subsrcibe to a topic
-mqtt sub --username '6adb637f9cf2' -P 'secret' -t '3ea8f06baf64/hello' -h 'localhost' -v
+mqtt sub --username '6adb637f9cf2' -P 'secret' -t '/3ea8f06baf64/hello' -h 'localhost' -v
 
 # Publish a message for this topic in another terminal
-mqtt pub --username '3ea8f06baf64' -P 'secret' -t '3ea8f06baf64/hello' -h 'localhost' -m 'Hello world'
+mqtt pub --username '3ea8f06baf64' -P 'secret' -t '/3ea8f06baf64/hello' -h 'localhost' -m 'Hello world'
 ```
 
 Granting and revoking privileges for publishing and subscribing to topics is performed like
@@ -76,21 +76,21 @@ this:
 
 ```
 # Grant 6adb637f9cf2 the right to subscribe to the topic mytopic
-mqtt pub --username '3ea8f06baf64' -P 'secret' -t '3ea8f06baf64/grant_sub_topic' -h 'localhost' -m '{"name":"mytopic","accountId":"6adb637f9cf2"}'
+mqtt pub --username '3ea8f06baf64' -P 'secret' -t '/3ea8f06baf64/grant_sub_topic' -h 'localhost' -m '{"name":"mytopic","accountId":"6adb637f9cf2"}'
 
 # Grant 6adb637f9cf2 the right to publish to the topic mytopic
-mqtt pub --username '3ea8f06baf64' -P 'secret' -t '3ea8f06baf64/grant_pub_topic' -h 'localhost' -m '{"name":"mytopic","accountId":"6adb637f9cf2"}'
+mqtt pub --username '3ea8f06baf64' -P 'secret' -t '/3ea8f06baf64/grant_pub_topic' -h 'localhost' -m '{"name":"mytopic","accountId":"6adb637f9cf2"}'
 
 
 # Now 6adb637f9cf2 can both publish and subscribe to the topic 3ea8f06baf64/mytopic
-mqtt sub --username '6adb637f9cf2' -P 'secret'  -t '3ea8f06baf64/mytopic' -h 'localhost' -v
-mqtt pub --username '6adb637f9cf2' -P 'secret'  -t '3ea8f06baf64/mytopic' -h 'localhost' -m '{data: "My data"}'
+mqtt sub --username '6adb637f9cf2' -P 'secret'  -t '/3ea8f06baf64/mytopic' -h 'localhost' -v
+mqtt pub --username '6adb637f9cf2' -P 'secret'  -t '/3ea8f06baf64/mytopic' -h 'localhost' -m '{data: "My data"}'
 
 # Revoke 6adb637f9cf2 the right to subscribe to the topic mytopic
-mqtt pub --username '3ea8f06baf64' -P 'secret' -t '3ea8f06baf64/revoke_sub_topic' -h 'localhost' -m '{"name":"mytopic","accountId":"6adb637f9cf2"}'
+mqtt pub --username '3ea8f06baf64' -P 'secret' -t '/3ea8f06baf64/revoke_sub_topic' -h 'localhost' -m '{"name":"mytopic","accountId":"6adb637f9cf2"}'
 
 # Revoke 6adb637f9cf2 the right to publish to the topic mytopic
-mqtt pub --username '3ea8f06baf64' -P 'secret' -t '3ea8f06baf64/revoke_pub_topic' -h 'localhost' -m '{"name":"mytopic","accountId":"6adb637f9cf2"}'
+mqtt pub --username '3ea8f06baf64' -P 'secret' -t '/3ea8f06baf64/revoke_pub_topic' -h 'localhost' -m '{"name":"mytopic","accountId":"6adb637f9cf2"}'
 ```
 
 
