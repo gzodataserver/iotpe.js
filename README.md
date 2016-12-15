@@ -71,8 +71,23 @@ mqtt sub --username '6adb637f9cf2' -P 'secret' -t '/3ea8f06baf64/hello' -h 'loca
 mqtt pub --username '3ea8f06baf64' -P 'secret' -t '/3ea8f06baf64/hello' -h 'localhost' -m 'Hello world'
 ```
 
-Granting and revoking privileges for publishing and subscribing to topics is performed like
-this:
+Business Logic
+--------------
+
+Messages sent to the server are passed to the business logic. A JavaScript
+script can be created for each topic, e.g. `/3ea8f06baf64/mytopic` translates
+to the script `3ea8f06baf64_mytopic.js`. The scripts runs in a NodeJS process.
+All scripts are sandboxed using the NodeJS `vm` module. The scripts has access
+to the MySQL account of the account and can also publish mqtt messages.
+
+
+Todo
+----
+
+**WORK IN PROGRESS**
+
+Granting and revoking privileges for publishing and subscribing to topics is
+performed like this:
 
 ```
 # Grant 6adb637f9cf2 the right to subscribe to the topic mytopic
@@ -92,13 +107,3 @@ mqtt pub --username '3ea8f06baf64' -P 'secret' -t '/3ea8f06baf64/revoke_sub_topi
 # Revoke 6adb637f9cf2 the right to publish to the topic mytopic
 mqtt pub --username '3ea8f06baf64' -P 'secret' -t '/3ea8f06baf64/revoke_pub_topic' -h 'localhost' -m '{"name":"mytopic","accountId":"6adb637f9cf2"}'
 ```
-
-
-Business Logic
---------------
-
-Messages sent to the server are passed to the business logic. A JavaScript
-script can be created for each topic, e.g. `3ea8f06baf64/mytopic` translates
-to the script `3ea8f06baf64_mytopic.js`. The scripts runs in a NodeJS process.
-All scripts are sandboxed using the NodeJS `vm` module. The scripts has access
-to the MySQL account of the account and can also publish mqtt messages.

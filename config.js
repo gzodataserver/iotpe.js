@@ -10,6 +10,11 @@ exports.store = {
   mongo: {}
 };
 
+exports.db_config = {
+  host : 'localhost'
+};
+
+
 exports.settings = {
   port: 1883
   /*, backend: store // remove backend and an in-memory store is used */
