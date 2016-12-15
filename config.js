@@ -20,10 +20,10 @@ exports.settings = {
   /*, backend: store // remove backend and an in-memory store is used */
 };
 
-// setup variables that should be available in the different accounts
+// setup variables that should be available for the different accounts
 // ------------------------------------------------------------------
 
-exports.alice = {
+exports.jonas = {
   console: console,
   myvar: 'ZZ'
 }

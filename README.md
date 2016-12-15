@@ -10,6 +10,22 @@ Communication with the Process Engine is performed using MQTT which is a
 pub/sub messaging architecture. PE is using [Mosca](http://www.mosca.io) for
 MQTT communication.
 
+
+Getting started
+---------------
+
+Check out `config.js` and make sure that MySQL `hostname` is correct.
+Also check the port for MQTT.
+
+Install the mqtt client (used for testing purposes): `npm install -g mqtt`
+
+Start the server: `node index.js`
+
+Subscribe to messages: `mqtt sub --username 'mysql_user' --password 'secret' -t '/mysql_user/calc' -h 'hostname' -v`
+
+Publish a message: `mqtt pub --username 'mysql_user' -P 'homeend' -t '/mysql_user/calc' -h 'hostname' -m 'Hello world'`
+
+
 Messaging
 ---------
 
