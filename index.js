@@ -1,5 +1,6 @@
 const fs = require('fs');
 const vm = require('vm');
+const mqtt = require('mqtt');
 const util = require('util');
 const mosca = require('mosca');
 
@@ -30,10 +31,7 @@ var readScript = function (filename) {
 var runScriptInVM = function(script, accountId) {
 
   var sandbox = {
-    animal: 'cat',
-    count: 2,
-    console: console,
-    server: server
+    mqtt: mqtt
   };
 
   // copy the account's configuraton to the sandbox

@@ -28,6 +28,7 @@
   "homepage": "https://github.com/gizur/jsiotpe#readme",
   "dependencies": {
     "bunyan": "^1.8.5",
-    "mosca": "^2.2.0"
+    "mosca": "^2.2.0",
+    "mqtt": "^2.1.3"
   }
 }
