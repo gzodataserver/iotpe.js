@@ -1,22 +1,27 @@
 JS IOT Process Engine
 =====================
 
-JavaScript IoT Process Engine (PE) is a lightweight engine that runs JavaScript business rules
-described in JavaScript. The engine runs on top of a MySQL database and authentication and
-authorization is also handled with MySQL users. A PE account correlates to one MySQL user.
+JavaScript IoT Process Engine (PE) is a lightweight engine that runs JavaScript
+business rules. The engine runs on top of a MySQL database and authentication and
+authorization is also handled with MySQL users. A PE account correlates to one
+MySQL user.
 
-Communication with the Process Engine is performed using MQTT which is a pub/sub messaging 
-architecture. PE is using [Mosca](http://www.mosca.io) for MQTT communication.
+Communication with the Process Engine is performed using MQTT which is a
+pub/sub messaging architecture. PE is using [Mosca](http://www.mosca.io) for
+MQTT communication.
 
-MQTT Has three Quality Of Service (QoS) Levels:
+Messaging
+---------
+
+MQTT Has three Quality Of Service (QoS) levels:
 
 * QoS 0 - At most once delivery
 * QoS 1 - At least once delivery
 * QoS 2 - Exactly once delivery (Not supported)
 
 Participants in a MQTT communication subscript and published messages in different topics.
-Topics can be hierachic using slashes '/' as separators. The wildcard '+' (one level) and 
-'#' (all remaining leverls) are  allowed when subscribing. 
+Topics can be hierachic using slashes '/' as separators. The wildcard '+' (one level) and
+'#' (all remaining leverls) are  allowed when subscribing.
 
 Here is a simple example of a MQTT server and two clients.
 
@@ -32,12 +37,14 @@ mqtt sub -t 'hello' -h 'localhost' -v
 mqtt pub -t 'hello' -h 'localhost' -m 'Hello world'
 ```
 
+User model and authorizations
+-----------------------------
 
 In PE are all messages addressed to one specific account.
-The 
-[server can authenticate the client](http://docs.oasis-open.org/mqtt/mqtt/v3.1.1/os/mqtt-v3.1.1-os.html#_Toc398718116). 
-This is performed in the CONNECT package with a username and password. There is no way for the 
-[client to authenticate the server](http://docs.oasis-open.org/mqtt/mqtt/v3.1.1/os/mqtt-v3.1.1-os.html#_Toc398718118) 
+The
+[server can authenticate the client](http://docs.oasis-open.org/mqtt/mqtt/v3.1.1/os/mqtt-v3.1.1-os.html#_Toc398718116).
+This is performed in the CONNECT package with a username and password. There is no way for the
+[client to authenticate the server](http://docs.oasis-open.org/mqtt/mqtt/v3.1.1/os/mqtt-v3.1.1-os.html#_Toc398718118)
 though. The MySQL username and password should be supplied when connecting to PE.
 
 Messages can be sent to server accounts and clients can also send messages to other accounts
@@ -46,8 +53,8 @@ and subscribe to.
 
 The examples below assumes that the NodeJS `mqtt` client is installed: `npm install -g mqtt`
 
-The Gizur [Odata server](https://github.com/gizur/odataserver2) provides a easy to use 
-mechanism for exposing tables as entities that can access an using HTTP REST API. It is 
+The Gizur [Odata server](https://github.com/gizur/odataserver2) provides a easy to use
+mechanism for exposing tables as entities that can access an using HTTP REST API. It is
 built on top of MySQL and provides an easy mechanism for creating accounts using an
 email address. MySQL accounts can also be created the traditional way.
 
@@ -87,11 +94,11 @@ mqtt pub --username '3ea8f06baf64' -P 'secret' -t '3ea8f06baf64/revoke_pub_topic
 ```
 
 
+Business Logic
+--------------
 
-
-
-
-
-
-
-
+Messages sent to the server are passed to the business logic. A JavaScript
+script can be created for each topic, e.g. `3ea8f06baf64/mytopic` translates
+to the script `3ea8f06baf64_mytopic.js`. The scripts runs in a NodeJS process.
+All scripts are sandboxed using the NodeJS `vm` module. The scripts has access
+to the MySQL account of the account and can also publish mqtt messages.
