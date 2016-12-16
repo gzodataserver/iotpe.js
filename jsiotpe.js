@@ -147,12 +147,15 @@ server.on('published', function(packet, client) {
     return;
   }
 
-  var accountId = packet.topic.split('/')[1];
-  var scriptName = packet.topic.split('/')[2];
-  readScript(scriptPath + accountId + '_' + scriptName + '.js')
-  .then(function(res, err) {
-    runScriptInVM(res, accountId);
-  })
+  var empty, accountId, operator, scriptName;
+  [empty, accountId, operator, scriptName, ...rest] = packet.topic.split('/');
+
+  if (operator === 'run') {
+    readScript(scriptPath + accountId + '_' + scriptName + '.js')
+    .then(function(res, err) {
+      runScriptInVM(res, accountId);
+    });
+  }
 });
 
 server.on('ready', setup);

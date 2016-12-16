@@ -15,15 +15,20 @@ Getting started
 ---------------
 
 Check out `config.js` and make sure that MySQL `hostname` is correct.
-Also check the port for MQTT.
+Also check the `port` for MQTT so it isn't used by some other process.
+Create a MySQL user, if you don't have one already, so you have something to
+play around with.
 
 Install the mqtt client (used for testing purposes): `npm install -g mqtt`
 
-Start the server: `node index.js`
+Start the server: `node jsiotpe.js`
 
 Subscribe to messages: `mqtt sub --username 'mysql_user' --password 'secret' -t '/mysql_user/calc' -h 'hostname' -v`
 
 Publish a message: `mqtt pub --username 'mysql_user' -P 'homeend' -t '/mysql_user/calc' -h 'hostname' -m 'Hello world'`
+
+Scripts can be loaded into mysql with a script:
+`./load_script.sh <mysql_username> <mysql_password> calc ./scripts/calc.js`
 
 
 For production

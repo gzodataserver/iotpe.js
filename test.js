@@ -3,7 +3,7 @@ var client  = mqtt.connect('mqtt://localhost', {username: 'jsiotpe', password: '
 
 client.on('connect', function () {
   client.subscribe('/jsiotpe/calc/result')
-  client.publish('/jsiotpe/calc', 'Hello mqtt')
+  client.publish('/jsiotpe/run/calc', 'Hello mqtt')
 })
 
 client.on('message', function (topic, message) {
