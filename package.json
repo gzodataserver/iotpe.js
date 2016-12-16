@@ -1,15 +1,15 @@
 {
-  "name": "jsiotpe",
+  "name": "iotpe.js",
   "version": "0.0.1",
   "description": "JavaScript IoT Process Engine",
   "main": "jsiotpe.js",
   "scripts": {
-    "start": "node index.js",
+    "start": "node iotpe.js",
     "test": "node test.js"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/gizur/jsiotpe.git"
+    "url": "git+https://github.com/gizur/iotpe.js.git"
   },
   "keywords": [
     "Internet",
@@ -24,9 +24,9 @@
   "author": "Jonas Colmsjö",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/gizur/jsiotpe/issues"
+    "url": "https://github.com/gizur/iotpe.js/issues"
   },
-  "homepage": "https://github.com/gizur/jsiotpe#readme",
+  "homepage": "https://github.com/gizur/iotpe.js#readme",
   "dependencies": {
     "bunyan": "^1.8.5",
     "mosca": "^2.2.0",

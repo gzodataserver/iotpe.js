@@ -54,7 +54,7 @@ var checkCredentials = function(accountId, password) {
 };
 
 // promisify fs.readFile()
-var readScript = function (filename) {
+var readScriptFromFile = function (filename) {
   return new Promise(function (resolve, reject) {
     fs.readFile(filename, function(err, buffer) {
       if (err) reject(err);
@@ -63,10 +63,27 @@ var readScript = function (filename) {
   });
 };
 
-var runScriptInVM = function(script, accountId, password) {
+var readScriptFromDb = function (accountId, scriptName) {
+  return new Promise(function (resolve, reject) {
+    var connection = createMysqlConn(accountId);
+    connection.query(`select script from ${accountId}.scripts where name='${scriptName}'`, function(err, rows, fields) {
+      if (err) {
+        log(err);
+        reject(err);
+      }
+      else {
+        debug('XXX', rows[0].script);
+        resolve(new vm.Script(rows[0].script));
+      }
+      connection.end();
+    });
+  });
+};
+
+var runScriptInVM = function(script, accountId) {
   debug('runScriptInVM', accountId);
 
-  var connection = createMysqlConn();
+  var connection = createMysqlConn(accountId);
   var sandbox = {
     mqtt: mqtt,
     connection: connection
@@ -88,7 +105,7 @@ var runScriptInVM = function(script, accountId, password) {
 // Accepts the connection if the username and password are valid
 var authenticate = function(client, username, password, callback) {
   checkCredentials(username, password.toString()).then(function(authorized){
-    debug('authenticate:', authorized, ', user: ', username);
+    debug('authenticate:' + authorized +', user: ' + username);
     if (authorized) {
       client.user = username;
       accountPasswords[username] = password.toString();
@@ -150,12 +167,23 @@ server.on('published', function(packet, client) {
   var empty, accountId, operator, scriptName;
   [empty, accountId, operator, scriptName, ...rest] = packet.topic.split('/');
 
+  if (operator === 'runfile') {
+    readScriptFromFile(scriptPath + accountId + '_' + scriptName + '.js')
+    .then(function(res, err) {
+      runScriptInVM(res, accountId);
+    })
+    .catch(function(err){
+      log(err);
+    })
+  }
+
   if (operator === 'run') {
-    readScript(scriptPath + accountId + '_' + scriptName + '.js')
+    readScriptFromDb(accountId, scriptName)
     .then(function(res, err) {
       runScriptInVM(res, accountId);
     });
   }
+
 });
 
 server.on('ready', setup);

@@ -12,3 +12,6 @@ client.on('connect', function () {
   client.publish('/jsiotpe/calc/result', JSON.stringify(result));
   client.end();
 })
+
+
+//console.log('myvar2:', myvar2);
