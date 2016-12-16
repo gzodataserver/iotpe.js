@@ -23,6 +23,7 @@ exports.db_config = {
   host : 'localhost'
 };
 
+
 //  Variables that should be available for the different accounts
 // -------------------------------------------------------------
 
@@ -37,4 +38,14 @@ exports.all = {
 
 exports.jsiotpe = {
   myvar: 'ZZ'
+}
+
+
+//  MySQL test credentials
+// ---------------------
+
+exports.mqttTestSettings = {
+  url: 'mqtt://localhost',
+  username: 'jsiotpe',
+  password: 'jsiotpe'
 }

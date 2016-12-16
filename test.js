@@ -1,9 +1,11 @@
 var mqtt = require('mqtt');
-var client  = mqtt.connect('mqtt://localhost', {username: 'jsiotpe', password: 'jsiotpe'});
+var cfg = require('./config.js');
+
+var client  = mqtt.connect(cfg.mqttTestSettings.url, cfg.mqttTestSettings);
 
 client.on('connect', function () {
-  client.subscribe('/jsiotpe/calc/result')
-  client.publish('/jsiotpe/run/calc', 'Hello mqtt')
+  client.subscribe(`/${cfg.mqttTestSettings.username}/calc/result`)
+  client.publish(`/${cfg.mqttTestSettings.username}/run/calc`, 'Hello mqtt')
 })
 
 client.on('message', function (topic, message) {
