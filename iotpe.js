@@ -3,7 +3,6 @@
 
 const fs = require('fs');
 const vm = require('vm');
-const mqtt = require('mqtt');
 const util = require('util');
 const mosca = require('mosca');
 const mysql = require('mysql');
@@ -85,9 +84,10 @@ var runScriptInVM = function(script, accountId) {
 
   var connection = createMysqlConn(accountId);
   var sandbox = {
-    mqtt: mqtt,
     connection: connection
   };
+
+  sandbox = Object.assign(sandbox, cfg.all);
 
   // copy the account's configuraton to the sandbox
   if (typeof cfg[accountId] !== 'undefined'){

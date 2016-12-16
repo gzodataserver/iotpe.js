@@ -21,7 +21,9 @@ play around with.
 
 Install the mqtt client (used for testing purposes): `npm install -g mqtt`
 
-Start the server: `node jsiotpe.js`
+Start the server: `npm start`
+
+Run the tests: `npm test`
 
 Subscribe to messages: `mqtt sub --username 'mysql_user' --password 'secret' -t '/mysql_user/calc' -h 'hostname' -v`
 
@@ -30,6 +32,7 @@ Publish a message: `mqtt pub --username 'mysql_user' -P 'homeend' -t '/mysql_use
 Scripts can be loaded into mysql with a script:
 `./load_script.sh <mysql_username> <mysql_password> calc ./scripts/calc.js`
 
+List the scripts in the database: `./list_script.sh <mysql_username> <mysql_password>`
 
 For production
 --------------
@@ -47,7 +50,7 @@ I'll show how to use `pm2` here:
 npm install -g pm2
 
 # start a process
-pm2 start jsiotpe.js
+pm2 start iotpe.js
 
 # show running processes (managed by pm2)
 pm2 list
@@ -57,10 +60,10 @@ pm2 logs
 
 
 # restart a process, for instance after changing some configuration
-pm2 restart jsiotpe.js
+pm2 restart iotpe
 
 # stop the process
-pm2 stop jsiotpe
+pm2 stop iotpe
 ```
 
 
@@ -77,19 +80,6 @@ Participants in a MQTT communication subscript and published messages in differe
 Topics can be hierachic using slashes '/' as separators. The wildcard '+' (one level) and
 '#' (all remaining leverls) are  allowed when subscribing.
 
-Here is a simple example of a MQTT server and two clients.
-
-```
-# Install and start a mosca server
-npm install mosca bunyan
-./node_modules/mosca/bin/mosca |  ./node_modules/bunyan/bin/bunyan
-
-# Subsrcibe to a topic
-mqtt sub -t 'hello' -h 'localhost' -v
-
-# Publish a message for this topic in another terminal
-mqtt pub -t 'hello' -h 'localhost' -m 'Hello world'
-```
 
 User model and authorizations
 -----------------------------
@@ -116,8 +106,6 @@ We'll assume that the accounts `3ea8f06baf64` and `6adb637f9cf2` exist in the da
 the example below.
 
 ```
-# mosca has no authentication out of the box, so this will work
-
 # Subsrcibe to a topic
 mqtt sub --username '6adb637f9cf2' -P 'secret' -t '/3ea8f06baf64/hello' -h 'localhost' -v
 
@@ -129,9 +117,10 @@ Business Logic
 --------------
 
 Messages sent to the server are passed to the business logic. A JavaScript
-script can be created for each topic, e.g. `/3ea8f06baf64/mytopic` translates
-to the script `3ea8f06baf64_mytopic.js`. The scripts runs in a NodeJS process.
-All scripts are sandboxed using the NodeJS `vm` module. The scripts has access
+script can be created for each topic, e.g. `/3ea8f06baf64/run/myscript` will
+run the script named `myscript` in the database. IT is also possible to run scripts
+stored in files like this: `/3ea8f06baf64/runfile/myscript` . The scripts runs in a NodeJS process.
+All scripts are sandboxed using the NodeJS `vm` module. The scripts have access
 to the MySQL account of the account and can also publish mqtt messages.
 
 

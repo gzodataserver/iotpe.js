@@ -26,7 +26,15 @@ exports.db_config = {
 //  Variables that should be available for the different accounts
 // -------------------------------------------------------------
 
+const mqtt = require('mqtt');
+const nodemailer = require('nodemailer');
+
+exports.all = {
+  mqtt: mqtt,
+  nodemailer: nodemailer,
+  console: console
+};
+
 exports.jsiotpe = {
-  console: console,
   myvar: 'ZZ'
 }
