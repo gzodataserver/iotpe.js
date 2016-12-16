@@ -26,6 +26,39 @@ Subscribe to messages: `mqtt sub --username 'mysql_user' --password 'secret' -t 
 Publish a message: `mqtt pub --username 'mysql_user' -P 'homeend' -t '/mysql_user/calc' -h 'hostname' -m 'Hello world'`
 
 
+For production
+--------------
+
+A process manager is needed when running in production. Scripts developed by
+users can crash the process so it needs to be monitored and restarted in this
+case. Two alternatives is [supervisord](http://supervisord.org) and
+[pm2](http://pm2.keymetrics.io) (there are many, it does not matter which one
+that is used).
+
+I'll show how to use `pm2` here:
+
+```
+# install pm2 globally
+npm install -g pm2
+
+# start a process
+pm2 start jsiotpe.js
+
+# show running processes (managed by pm2)
+pm2 list
+
+# show logs (streaming), ctrl-c to break out
+pm2 logs
+
+
+# restart a process, for instance after changing some configuration
+pm2 restart jsiotpe.js
+
+# stop the process
+pm2 stop jsiotpe
+```
+
+
 Messaging
 ---------
 

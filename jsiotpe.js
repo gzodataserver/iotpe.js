@@ -1,3 +1,6 @@
+// Imports
+// =======
+
 const fs = require('fs');
 const vm = require('vm');
 const mqtt = require('mqtt');
@@ -7,29 +10,28 @@ const mysql = require('mysql');
 
 const cfg = require('./config.js')
 
-const log = console.log.bind(console, 'LOG');
-const error = console.log.bind(console, 'ERROR');
-const debug = console.log.bind(console, 'DEBUG');
+// Logging
+// ========
+
+const log = console.log.bind(console, new Date(), 'LOG');
+const error = console.log.bind(console, new Date(), 'ERROR');
+const debug = console.log.bind(console, new Date(), 'DEBUG');
+
+
+// Constants
+// =========
 
 const scriptPath = 'scripts/';
 
+// Variables
+// =========
+
 // store account passwords
 var accountPasswords = {};
-var server = new mosca.Server(cfg.settings);
 
-server.on('clientConnected', function(client) {
-  log('client connected', client.id);
-});
 
-// promisify fs.readFile()
-var readScript = function (filename) {
-  return new Promise(function (resolve, reject) {
-    fs.readFile(filename, function(err, buffer) {
-      if (err) reject(err);
-      else resolve(new vm.Script(buffer));
-    });
-  });
-};
+// Helpers
+// ========
 
 var createMysqlConn = function (accountId, password) {
   return mysql.createConnection({
@@ -51,8 +53,18 @@ var checkCredentials = function(accountId, password) {
   });
 };
 
+// promisify fs.readFile()
+var readScript = function (filename) {
+  return new Promise(function (resolve, reject) {
+    fs.readFile(filename, function(err, buffer) {
+      if (err) reject(err);
+      else resolve(new vm.Script(buffer));
+    });
+  });
+};
+
 var runScriptInVM = function(script, accountId, password) {
-  debug('runScriptInVM', accountPasswords[accountId]);
+  debug('runScriptInVM', accountId);
 
   var connection = createMysqlConn();
   var sandbox = {
@@ -73,30 +85,13 @@ var runScriptInVM = function(script, accountId, password) {
   }
 };
 
-
-// fired when a message is received
-server.on('published', function(packet, client) {
-  debug('Publish', packet.topic);
-
-  if (packet.topic.split('/')[0] === '$SYS') {
-    return;
-  }
-
-  var accountId = packet.topic.split('/')[1];
-  var scriptName = packet.topic.split('/')[2];
-  readScript(scriptPath + accountId + '_' + scriptName + '.js')
-  .then(function(res, err) {
-    runScriptInVM(res, accountId);
-  })
-});
-
 // Accepts the connection if the username and password are valid
 var authenticate = function(client, username, password, callback) {
   checkCredentials(username, password.toString()).then(function(authorized){
     debug('authenticate:', authorized, ', user: ', username);
     if (authorized) {
       client.user = username;
-      accountPasswords[username] = password;
+      accountPasswords[username] = password.toString();
     }
     callback(null, authorized);
   })
@@ -119,12 +114,45 @@ var authorizeSubscribe = function(client, topic, callback) {
 };
 
 // fired when the mqtt server is ready
-function setup() {
+var setup = function () {
   server.authenticate = authenticate;
   server.authorizePublish = authorizePublish;
   server.authorizeSubscribe = authorizeSubscribe;
 
   console.log("JsIoTPE server is up and running on port", cfg.settings.port);
 }
+
+// Handle errors
+// =============
+
+process.on('uncaughtException', function(err){
+  log(err);
+  process.exit(0);
+});
+
+// Main
+// =====
+
+var server = new mosca.Server(cfg.settings);
+
+server.on('clientConnected', function(client) {
+  log('client connected', client.id);
+});
+
+// fired when a message is received
+server.on('published', function(packet, client) {
+  debug('Publish', packet.topic);
+
+  if (packet.topic.split('/')[0] === '$SYS') {
+    return;
+  }
+
+  var accountId = packet.topic.split('/')[1];
+  var scriptName = packet.topic.split('/')[2];
+  readScript(scriptPath + accountId + '_' + scriptName + '.js')
+  .then(function(res, err) {
+    runScriptInVM(res, accountId);
+  })
+});
 
 server.on('ready', setup);

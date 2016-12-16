@@ -10,20 +10,23 @@ exports.store = {
   mongo: {}
 };
 
-exports.db_config = {
-  host : 'localhost'
-};
-
-
 exports.settings = {
   port: 1883
   /*, backend: store // remove backend and an in-memory store is used */
 };
 
-// setup variables that should be available for the different accounts
-// ------------------------------------------------------------------
 
-exports.jonas = {
+// MySQL configuration
+// -------------------
+
+exports.db_config = {
+  host : 'localhost'
+};
+
+//  Variables that should be available for the different accounts
+// -------------------------------------------------------------
+
+exports.jsiotpe = {
   console: console,
   myvar: 'ZZ'
 }
