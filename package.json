@@ -1,6 +1,6 @@
 {
   "name": "iotpe.js",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "JavaScript IoT Process Engine",
   "main": "jsiotpe.js",
   "scripts": {

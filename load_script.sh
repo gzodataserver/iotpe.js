@@ -7,7 +7,7 @@ then
 fi
 
 cat > /tmp/script.sql <<EOF
-use $1;
+use $2;
 create table if not exists scripts(name varchar(255), script text);
 delete from scripts where name = '$4';
 insert into scripts(name,script) values ('$4', load_file('$(pwd)/$5'));
