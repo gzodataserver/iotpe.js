@@ -104,6 +104,7 @@ var runScriptInVM = function(script, accountId) {
 
 // Accepts the connection if the username and password are valid
 var authenticate = function(client, username, password, callback) {
+  password = password || '';
   checkCredentials(username, password.toString()).then(function(authorized){
     debug('authenticate:' + authorized +', user: ' + username);
     if (authorized) {
