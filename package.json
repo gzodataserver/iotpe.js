@@ -4,8 +4,12 @@
   "description": "JavaScript IoT Process Engine",
   "main": "jsiotpe.js",
   "scripts": {
-    "start": "node iotpe.js",
-    "test": "node test.js"
+    "start": "nodejs iotpe.js",
+    "test": "nodejs test.js",
+    "docker-build" : "docker build --tag iotpe --file docker-context/Dockerfile docker-context",
+    "docker-prompt" : "docker exec -i -t iotpe-my /bin/bash",
+    "docker-run" : "docker run -p 1883:1883 -d -t --name iotpe-my iotpe",
+    "docker-clean" : "docker stop iotpe-my && docker rm iotpe-my && docker rmi iotpe"
   },
   "repository": {
     "type": "git",
