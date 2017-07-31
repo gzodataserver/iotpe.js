@@ -34,6 +34,21 @@ Scripts can be loaded into mysql with a script:
 
 List the scripts in the database: `./list_script.sh <mysql_username> <mysql_password>`
 
+
+**Docker Executable**
+
+1) Build the image with
+
+    `npm run docker-build`
+
+2) Run the image as containter
+
+    `npm run docker-run`
+
+
+    Additionally, you can clean or remove all related image and container `npm run docker-clean`.
+    To access the container just run `npm run docker-prompt`
+
 For production
 --------------
 
